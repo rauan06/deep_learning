@@ -1,0 +1,112 @@
+================================================================================
+CELL 35: CNN Number Identification Demo
+================================================================================
+Copy this code into a NEW cell after Cell 34 (Plot CNN training)
+
+# Visualize CNN predictions on test images
+print("\n" + "="*60)
+print("CNN Number Identification Demo")
+print("="*60)
+
+# Select some test images to visualize
+num_samples = 12
+sample_indices = np.random.choice(len(X_test_cnn), num_samples, replace=False)
+
+fig, axes = plt.subplots(3, 4, figsize=(14, 10))
+fig.suptitle('CNN Predictions on Test Images', fontsize=16, fontweight='bold')
+
+correct_count = 0
+for idx, ax in enumerate(axes.flat):
+    if idx < num_samples:
+        sample_idx = sample_indices[idx]
+        img = X_test_cnn[sample_idx:sample_idx+1]  # Shape: (1, 1, 28, 28)
+        true_label = np.argmax(y_test_cnn[sample_idx])
+        
+        # Get prediction
+        pred_probs = cnn.forward(img)
+        pred_label = np.argmax(pred_probs[0])
+        confidence = pred_probs[0][pred_label] * 100
+        
+        # Display image
+        ax.imshow(img[0, 0], cmap='gray')
+        
+        # Color: green if correct, red if wrong
+        color = 'green' if pred_label == true_label else 'red'
+        if pred_label == true_label:
+            correct_count += 1
+        
+        # Title with prediction and confidence
+        ax.set_title(f'True: {true_label} | Pred: {pred_label}\nConfidence: {confidence:.1f}%', 
+                    color=color, fontsize=11, fontweight='bold')
+        ax.axis('off')
+    else:
+        ax.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+print(f"\nAccuracy on {num_samples} random samples: {correct_count}/{num_samples} ({100*correct_count/num_samples:.1f}%)")
+print("\n" + "="*60)
+
+
+================================================================================
+CELL 36: Detailed Prediction Analysis
+================================================================================
+Copy this code into a NEW cell after Cell 35
+
+# Detailed prediction analysis for a single image
+print("\n" + "="*60)
+print("Detailed Prediction Analysis")
+print("="*60)
+
+# Pick a random test image
+test_idx = np.random.randint(0, len(X_test_cnn))
+img = X_test_cnn[test_idx:test_idx+1]
+true_label = np.argmax(y_test_cnn[test_idx])
+
+# Get prediction probabilities
+pred_probs = cnn.forward(img)[0]
+pred_label = np.argmax(pred_probs)
+
+# Create visualization
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Left: Show the image
+axes[0].imshow(img[0, 0], cmap='gray')
+axes[0].set_title(f'Input Image\nTrue Label: {true_label}', fontsize=14, fontweight='bold')
+axes[0].axis('off')
+
+# Right: Show probability distribution
+bars = axes[1].bar(range(10), pred_probs * 100, color=['red' if i == pred_label else 'blue' for i in range(10)])
+axes[1].set_xlabel('Digit', fontsize=12)
+axes[1].set_ylabel('Probability (%)', fontsize=12)
+axes[1].set_title(f'Prediction Probabilities\nPredicted: {pred_label} ({pred_probs[pred_label]*100:.1f}%)', 
+                 fontsize=14, fontweight='bold')
+axes[1].set_xticks(range(10))
+axes[1].set_ylim([0, 100])
+axes[1].grid(True, alpha=0.3)
+
+# Add value labels on bars
+for i, (bar, prob) in enumerate(zip(bars, pred_probs)):
+    height = bar.get_height()
+    axes[1].text(bar.get_x() + bar.get_width()/2., height + 1,
+                f'{prob*100:.1f}%', ha='center', va='bottom', fontsize=9)
+
+# Highlight correct prediction
+if pred_label == true_label:
+    result_text = f"✓ CORRECT! Model correctly identified digit {pred_label}"
+    result_color = 'green'
+else:
+    result_text = f"✗ WRONG! Model predicted {pred_label} but true label is {true_label}"
+    result_color = 'red'
+
+fig.suptitle(result_text, fontsize=14, fontweight='bold', color=result_color, y=0.02)
+plt.tight_layout()
+plt.subplots_adjust(top=0.9)
+plt.show()
+
+print(f"\nTrue Label: {true_label}")
+print(f"Predicted Label: {pred_label}")
+print(f"Confidence: {pred_probs[pred_label]*100:.2f}%")
+print(f"Result: {'CORRECT ✓' if pred_label == true_label else 'WRONG ✗'}")
+print("="*60)
