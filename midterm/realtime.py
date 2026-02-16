@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Real-Time Digit Recognition using YOUR DigitRecognizer class
-This imports and uses YOUR trained model directly!
+Real-Time Digit Recognition using  DigitRecognizer class
+This imports and uses  trained model directly!
 """
 
 import tkinter as tk
@@ -13,27 +13,27 @@ import time
 import sys
 import os
 
-# Import YOUR DigitRecognizer class
+# Import  DigitRecognizer class
 sys.path.insert(0, os.getcwd())  # Add current directory to path
 sys.path.append('/home/claude')
 sys.path.append('/mnt/user-data/outputs')
 
 try:
     from digit_recognizer import DigitRecognizer
-    print("✓ Successfully imported YOUR DigitRecognizer class!")
+    print("Successfully imported DigitRecognizer class!")
 except ImportError as e:
-    print(f"✗ Could not import DigitRecognizer: {e}")
+    print(f"Could not import DigitRecognizer: {e}")
     print("Make sure digit_recognizer.py is in the same directory!")
 
 
 class RealTimeDigitGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Real-Time Digit Recognition - Using YOUR Model")
+        self.root.title("Real-Time Digit Recognition - Using  Model")
         self.root.geometry("900x600")
         self.root.configure(bg='#2c3e50')
         
-        # YOUR DigitRecognizer instance
+        #  DigitRecognizer instance
         self.recognizer = DigitRecognizer()
         self.model_loaded = False
         
@@ -55,7 +55,7 @@ class RealTimeDigitGUI:
         self.prediction_scheduled = False
         
         self._setup_ui()
-        self._load_your_model()
+        self._load__model()
         
     def _setup_ui(self):
         """Setup the user interface."""
@@ -71,7 +71,7 @@ class RealTimeDigitGUI:
         
         tk.Label(
             header,
-            text="⚡ Real-Time Digit Recognition",
+            text="Real-Time Digit Recognition",
             font=('Arial', 28, 'bold'),
             bg='#3498db',
             fg='white'
@@ -79,7 +79,7 @@ class RealTimeDigitGUI:
         
         tk.Label(
             header,
-            text="Using YOUR DigitRecognizer Model",
+            text="Using DigitRecognizer Model",
             font=('Arial', 12, 'italic'),
             bg='#3498db',
             fg='#ecf0f1'
@@ -147,7 +147,7 @@ class RealTimeDigitGUI:
         # Clear button
         clear_btn = tk.Button(
             left_frame,
-            text="🗑️ CLEAR",
+            text="CLEAR",
             command=self._clear_canvas,
             font=('Arial', 12, 'bold'),
             bg='#e74c3c',
@@ -200,7 +200,7 @@ class RealTimeDigitGUI:
         # Status indicator
         self.status_label = tk.Label(
             right_frame,
-            text="● Loading YOUR model...",
+            text="● Loading model...",
             font=('Arial', 12),
             bg='#34495e',
             fg='#f39c12'
@@ -348,7 +348,7 @@ class RealTimeDigitGUI:
             self.root.after(remaining_time, self._auto_predict)
     
     def _predict(self):
-        """Make prediction using YOUR DigitRecognizer."""
+        """Make prediction using DigitRecognizer."""
         if not self.model_loaded:
             return
         
@@ -357,13 +357,13 @@ class RealTimeDigitGUI:
             return
         
         try:
-            # Preprocess image (same as YOUR recognizer expects)
+            # Preprocess image (same as  recognizer expects)
             processed_image = self._preprocess_image()
             
             if processed_image is None:
                 return
             
-            # Use YOUR recognizer's predict_digit method!
+            # Use  recognizer's predict_digit method!
             digit, confidence = self.recognizer.predict_digit(processed_image)
             
             # Also get full prediction probabilities
@@ -398,7 +398,7 @@ class RealTimeDigitGUI:
             traceback.print_exc()
     
     def _preprocess_image(self):
-        """Preprocess image (same format as YOUR model expects)."""
+        """Preprocess image (same format as  model expects)."""
         try:
             # Convert to grayscale
             img_gray = ImageOps.grayscale(self.image)
@@ -439,13 +439,13 @@ class RealTimeDigitGUI:
                 right_pad = diff - left_pad
                 img_cropped = np.pad(img_cropped, ((0, 0), (left_pad, right_pad)), mode='constant')
             
-            # Resize to 28x28 (what YOUR model expects!)
+            # Resize to 28x28 (what  model expects!)
             img_resized = cv2.resize(img_cropped, (28, 28), interpolation=cv2.INTER_AREA)
             
-            # Normalize (0-1 range, like YOUR model expects!)
+            # Normalize (0-1 range, like  model expects!)
             img_normalized = img_resized.astype('float32') / 255.0
             
-            # Reshape for YOUR model (1, 28, 28, 1)
+            # Reshape for  model (1, 28, 28, 1)
             img_final = img_normalized.reshape(1, 28, 28, 1)
             
             return img_final
@@ -470,10 +470,10 @@ class RealTimeDigitGUI:
             bar_bg.coords(bar, 0, 0, 0, 20)
             self.prob_labels[i].config(text="0%")
     
-    def _load_your_model(self):
-        """Load YOUR trained model using YOUR DigitRecognizer class."""
+    def _load__model(self):
+        """Load  trained model using  DigitRecognizer class."""
         try:
-            # Use YOUR recognizer's load_model method!
+            # Use  recognizer's load_model method!
             # Try current directory first
             model_path = 'digit_recognizer_model.h5'
             
@@ -481,33 +481,33 @@ class RealTimeDigitGUI:
                 # Try outputs directory as fallback
                 model_path = '/mnt/user-data/outputs/digit_recognizer_model.h5'
             
-            print(f"Loading YOUR model from: {model_path}")
+            print(f"Loading  model from: {model_path}")
             self.recognizer.load_model(model_path)
             self.model_loaded = True
             
-            self.status_label.config(text="● YOUR Model Loaded!", fg='#2ecc71')
-            print("✓ Successfully loaded YOUR trained model!")
+            self.status_label.config(text="● Model Loaded!", fg='#2ecc71')
+            print("Successfully loaded trained model!")
             
         except FileNotFoundError:
             self.status_label.config(text="✗ Model not found - Train first!", fg='#e74c3c')
             messagebox.showerror(
                 "Model Not Found",
-                "YOUR model file not found!\n\n"
-                "Please train YOUR model first by running:\n"
+                " model file not found!\n\n"
+                "Please train  model first by running:\n"
                 "python digit_recognizer.py"
             )
         except Exception as e:
             self.status_label.config(text="✗ Error loading model", fg='#e74c3c')
-            messagebox.showerror("Error", f"Failed to load YOUR model:\n{e}")
+            messagebox.showerror("Error", f"Failed to load  model:\n{e}")
             import traceback
             traceback.print_exc()
 
 
 def main():
-    """Run the real-time GUI with YOUR DigitRecognizer."""
+    """Run the real-time GUI with  DigitRecognizer."""
     print("="*60)
     print("Real-Time Digit Recognition")
-    print("Using YOUR DigitRecognizer class!")
+    print("")
     print("="*60)
     
     root = tk.Tk()

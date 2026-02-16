@@ -76,7 +76,7 @@ class DigitRecognizer:
         
         return model
     
-    def train(self, x_train, y_train, x_test, y_test, epochs=10, batch_size=128):
+    def train(self, x_train, y_train, x_test, y_test, epochs=20, batch_size=128):
         """Train the model."""
         print(f"\nTraining model for {epochs} epochs...")
         
